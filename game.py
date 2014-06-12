@@ -13,7 +13,7 @@ class Character(GameElement):
 
     def __init__(self):
         GameElement.__init__(self)
-        self.inventory = []
+        self.inventory = {}
 
     def next_pos(self, direction):
         if direction == "up":
@@ -32,22 +32,42 @@ class Gem(GameElement):
     SOLID = False
 
     def interact(self, player):
-        player.inventory.append(self)
-        GAME_BOARD.draw_msg("You just acquired a gem! You have %d items!" %(len(player.inventory)))
+        if "gem" in player.inventory.keys():
+            player.inventory["gem"] += 1
+        else:
+            player.inventory["gem"] = 1
+        # GAME_BOARD.draw_msg("You just acquired a gem! You have %s items!") % (player.inventory["gem"])
+        print player.inventory
 
 class Door(GameElement):
     IMAGE = "DoorClosed"
     SOLID = True
 
     def interact(self, player):
-        GAME_BOARD.draw_msg("You can't enter without a key!")
+        if "key" in player.inventory.keys(): 
+            GAME_BOARD.del_el(5,5)
+        else:
+            GAME_BOARD.draw_msg("You can't enter without a key!")
 
 class Key(GameElement):
     IMAGE = "Key"
 
     def interact(self, player):
-        player.inventory.append(self)
+        if "key" in player.inventory.keys():
+            player.inventory["key"] += 1
+        else:
+            player.inventory["key"] = 1
         GAME_BOARD.draw_msg("You just acquired a key!")
+        print player.inventory
+
+# class OpenDoor(GameElement):
+#     IMAGE = "DoorOpen"
+#     SOLID = False
+
+#     def interact(self, player):
+
+
+
 
 #### DO NOT TOUCH ####
 GAME_BOARD = None
@@ -129,12 +149,15 @@ def initialize():
 
     door = Door()
     GAME_BOARD.register(door)
-   
+    GAME_BOARD.set_el(5,5, door)
 
+    # opendoor = OpenDoor()
+    # GAME_BOARD.register(opendoor)
+    # GAME_BOARD.set_el(5,5,opendoor)
 
-    key = Key()
-    GAME_BOARD.register(key)
-    GAME_BOARD.set_el(5,1,key)
+    game_key = Key()
+    GAME_BOARD.register(game_key)
+    GAME_BOARD.set_el(5,1,game_key)
 
 def keyboard_handler():
     # if KEYBOARD[key.UP]:
@@ -181,6 +204,7 @@ def keyboard_handler():
 
             if existing_el:
                 existing_el.interact(PLAYER)
+                
 
             if existing_el is None or not existing_el.SOLID:
                 GAME_BOARD.del_el(PLAYER.x, PLAYER.y)
@@ -188,13 +212,7 @@ def keyboard_handler():
         else: 
             print "You are not in bounds."
 
-            if existing_el == door and inventory.index(key) == True:
+            # if existing_el == door and inventory.index(key) == True:
+            #     print "yee you reached door with key"
                 # turn door nonsolids
                 # replace door with open door
-                
-
-
-
-
-        
-
