@@ -46,6 +46,10 @@ class Door(GameElement):
     def interact(self, player):
         if "key" in player.inventory.keys(): 
             GAME_BOARD.del_el(5,5)
+            
+            opendoor = OpenDoor()
+            GAME_BOARD.register(opendoor)
+            GAME_BOARD.set_el(5,5, opendoor)
         else:
             GAME_BOARD.draw_msg("You can't enter without a key!")
 
@@ -60,11 +64,12 @@ class Key(GameElement):
         GAME_BOARD.draw_msg("You just acquired a key!")
         print player.inventory
 
-# class OpenDoor(GameElement):
-#     IMAGE = "DoorOpen"
-#     SOLID = False
+class OpenDoor(GameElement):
+    IMAGE = "DoorOpen"
+    SOLID = False
 
-#     def interact(self, player):
+    def interact(self, player):
+        pass
 
 
 
@@ -153,7 +158,6 @@ def initialize():
 
     # opendoor = OpenDoor()
     # GAME_BOARD.register(opendoor)
-    # GAME_BOARD.set_el(5,5,opendoor)
 
     game_key = Key()
     GAME_BOARD.register(game_key)
