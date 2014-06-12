@@ -35,6 +35,20 @@ class Gem(GameElement):
         player.inventory.append(self)
         GAME_BOARD.draw_msg("You just acquired a gem! You have %d items!" %(len(player.inventory)))
 
+class Door(GameElement):
+    IMAGE = "DoorClosed"
+    SOLID = True
+
+    def interact(self, player):
+        GAME_BOARD.draw_msg("You can't enter without a key!")
+
+class Key(GameElement):
+    IMAGE = "Key"
+
+    def interact(self, player):
+        player.inventory.append(self)
+        GAME_BOARD.draw_msg("You just acquired a key!")
+
 #### DO NOT TOUCH ####
 GAME_BOARD = None
 DEBUG = False
@@ -42,8 +56,9 @@ KEYBOARD = None
 PLAYER = None
 ######################
 
-GAME_WIDTH = 5
-GAME_HEIGHT = 5
+GAME_WIDTH = 7
+GAME_HEIGHT = 7
+
 
 #### Put class definitions here ####
 pass
@@ -73,7 +88,7 @@ def initialize():
 
     rock_positions = [
         (2,1),
-        (1,2),
+        (4,2),
         (3,2),
         (2,3)
     ]
@@ -87,10 +102,11 @@ def initialize():
         rocks.append(rock)
 
     rocks[-1].SOLID = False
+    rocks[-2].SOLID = False
+
 
     for rock in rocks:
         print rock
-
 
     #intitalize global player
 
@@ -110,6 +126,15 @@ def initialize():
     gem2 = Gem()
     GAME_BOARD.register(gem2)
     GAME_BOARD.set_el(0,3,gem2)
+
+    door = Door()
+    GAME_BOARD.register(door)
+   
+
+
+    key = Key()
+    GAME_BOARD.register(key)
+    GAME_BOARD.set_el(5,1,key)
 
 def keyboard_handler():
     # if KEYBOARD[key.UP]:
@@ -151,15 +176,25 @@ def keyboard_handler():
         next_x = next_location[0]
         next_y = next_location[1]
 
-        existing_el = GAME_BOARD.get_el(next_x, next_y)
+        if next_location[0] in range(0, GAME_WIDTH) and next_location[1] in range(0, GAME_HEIGHT):
+            existing_el = GAME_BOARD.get_el(next_x, next_y)
 
-        if existing_el:
-            existing_el.interact(PLAYER)
+            if existing_el:
+                existing_el.interact(PLAYER)
 
-        if existing_el is None or not existing_el.SOLID:
-            GAME_BOARD.del_el(PLAYER.x, PLAYER.y)
-            GAME_BOARD.set_el(next_x, next_y, PLAYER)
+            if existing_el is None or not existing_el.SOLID:
+                GAME_BOARD.del_el(PLAYER.x, PLAYER.y)
+                GAME_BOARD.set_el(next_x, next_y, PLAYER)
+        else: 
+            print "You are not in bounds."
 
-        
+            if existing_el == door and inventory.index(key) == True:
+                # turn door nonsolids
+                # replace door with open door
+                
+
+
+
+
         
 
