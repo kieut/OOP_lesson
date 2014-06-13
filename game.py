@@ -69,9 +69,103 @@ class OpenDoor(GameElement):
     SOLID = False
 
     def interact(self, player):
-        pass
+        for y in range(GAME_HEIGHT):
+            for x in range(GAME_WIDTH):
+                GAME_BOARD.del_el(x, y)
+
+        gem3 = Gem()
+        GAME_BOARD.register(gem3)
+        GAME_BOARD.set_el(3, 3, gem3)
+
+        game_key2 = Key()
+        GAME_BOARD.register(game_key2)
+        GAME_BOARD.set_el(7, 2, game_key2)
+
+        chest = Chest()
+        GAME_BOARD.register(chest)
+        GAME_BOARD.set_el(8,8, chest)
+
+        # waterblock = WaterBlock()
+        # GAME_BOARD.register(waterblock)
+        # GAME_BOARD.set_el(4,2, waterblock)
+
+        # shorttree = ShortTree()
+        # GAME_BOARD.register(shorttree)
+        # GAME_BOARD.set_el(1,1, shorttree)
+
+        water_positions = [
+        (1,6),
+        (2,6),
+        (3,6),
+        (4,6),
+        (7,6),
+        (8,6)
+    ]
+
+        water = []
+
+        for pos in water_positions:
+            waterblock = WaterBlock()
+            GAME_BOARD.register(waterblock)
+            GAME_BOARD.set_el(pos[0], pos[1], waterblock)
+            water.append(waterblock)
+
+        tree_positions = [
+        (6,1),
+        (7,1),
+        (8,1),
+        (6,2),
+        (6,3),
+        (8,2),
+        (8,3),
+        (7,3)
+    ]
+
+        trees = []
+
+        for pos in tree_positions:
+            tree = ShortTree()
+            GAME_BOARD.register(tree)
+            GAME_BOARD.set_el(pos[0], pos[1], tree)
+            trees.append(tree)
+
+        trees[-1].SOLID = False
 
 
+
+
+
+class Star(GameElement):
+    IMAGE = "Star"
+
+    def interact(self, player):
+        if "key" in player.inventory.keys():
+            player.inventory["key"] += 1
+        else:
+            player.inventory["key"] = 1
+        GAME_BOARD.draw_msg("You just acquired a key!")
+
+class ShortTree(GameElement):
+    IMAGE = "ShortTree"
+    SOLID = True
+
+class WaterBlock(GameElement):
+    IMAGE = "WaterBlock"
+    SOLID = True
+
+class Chest(GameElement):
+    IMAGE = "Chest"
+    SOLID = True
+
+    def interact(self, player):
+        if "key" in player.inventory.keys(): 
+            GAME_BOARD.draw_msg("Congratulations You have won the GAME! Hurray!!!")
+        
+
+
+
+
+            
 
 
 #### DO NOT TOUCH ####
@@ -81,8 +175,8 @@ KEYBOARD = None
 PLAYER = None
 ######################
 
-GAME_WIDTH = 7
-GAME_HEIGHT = 7
+GAME_WIDTH = 10
+GAME_HEIGHT = 10
 
 
 #### Put class definitions here ####
@@ -113,7 +207,7 @@ def initialize():
 
     rock_positions = [
         (2,1),
-        (4,2),
+        (1,2),
         (3,2),
         (2,3)
     ]
@@ -146,11 +240,12 @@ def initialize():
 
     gem = Gem()
     GAME_BOARD.register(gem)
-    GAME_BOARD.set_el(3,1,gem)
+    GAME_BOARD.set_el(3,3,gem)
 
     gem2 = Gem()
     GAME_BOARD.register(gem2)
-    GAME_BOARD.set_el(0,3,gem2)
+    GAME_BOARD.set_el(1,5,gem2)
+
 
     door = Door()
     GAME_BOARD.register(door)
